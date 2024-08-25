@@ -3,20 +3,21 @@ package controllers
 import (
 	"context"
 	"github.com/labstack/echo/v4"
+	"smart-mess/domain"
 )
 
 type AuthController struct {
 	baseCtx context.Context
-	//catuc    domain.CategoryUseCase
+	authuc  domain.IAuthService
 }
 
 func NewAuthController(
 	baseCtx context.Context,
-	// catuc domain.CategoryUseCase,
+	authuc domain.IAuthService,
 ) *AuthController {
 	return &AuthController{
 		baseCtx: baseCtx,
-		//catuc:    catuc,
+		authuc:  authuc,
 	}
 }
 func (ctrlr *AuthController) Login(c echo.Context) error {
@@ -33,12 +34,12 @@ func (ctrlr *AuthController) Login(c echo.Context) error {
 	//
 	//if res, err = authsvc.Login(cred); err != nil {
 	//	switch {
-	//case errors.Is(err, errutil.ErrInvalidEmail), errors.Is(err, errutil.ErrInvalidPassword):
-	//	return c.JSON(http.StatusUnauthorized, msgCtx.InvalidUserPassword())
-	//case errors.Is(err, errutil.ErrNotAdmin):
-	//	return c.JSON(http.StatusForbidden, msgCtx.AccessForbidden())
-	//case errors.Is(err, errutil.ErrCreateJwt):
-	//	return c.JSON(http.StatusInternalServerError, msgCtx.SomethingWentWrong().WithValidationError(errutil.ErrCreateJwt))
+	//	case errors.Is(err, errutil.ErrInvalidEmail), errors.Is(err, errutil.ErrInvalidPassword):
+	//		return c.JSON(http.StatusUnauthorized, msgCtx.InvalidUserPassword())
+	//	case errors.Is(err, errutil.ErrNotAdmin):
+	//		return c.JSON(http.StatusForbidden, msgCtx.AccessForbidden())
+	//	case errors.Is(err, errutil.ErrCreateJwt):
+	//		return c.JSON(http.StatusInternalServerError, msgCtx.SomethingWentWrong().WithValidationError(errutil.ErrCreateJwt))
 	//	default:
 	//		return c.JSON(http.StatusInternalServerError, msgCtx.SomethingWentWrong())
 	//	}

@@ -11,9 +11,9 @@ type TokenRefreshReq struct {
 }
 
 type LoginResp struct {
-	AccessToken  string    `json:"access_token"`
-	RefreshToken string    `json:"refresh_token"`
-	User         *UserResp `json:"user"`
+	AccessToken  string              `json:"access_token"`
+	RefreshToken string              `json:"refresh_token"`
+	User         *UserWithParamsResp `json:"user"`
 }
 
 type JwtToken struct {

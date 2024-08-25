@@ -9,6 +9,10 @@ import (
 	httpRoutes "smart-mess/infra/http/routes"
 	httpServer "smart-mess/infra/http/server"
 	"smart-mess/infra/logger"
+	"smart-mess/repositories/db"
+
+	authservice "smart-mess/services/auth"
+	txservice "smart-mess/services/transaction"
 )
 
 var serveCmd = &cobra.Command{
@@ -25,11 +29,19 @@ func serve(cmd *cobra.Command, args []string) {
 	dbClient := conn.Db()
 	_ = dbClient
 
+	dbRepo := db.NewRepository(dbClient, &lc)
+
+	txsvc := txservice.NewDBTransaction(lc, dbRepo)
+	authsvc := authservice.NewAuthService(dbRepo)
+
+	_ = txsvc
+
 	// HttpServer
 	var HttpServer = httpServer.New()
 
 	authController := httpControllers.NewAuthController(
 		baseContext,
+		authsvc,
 	)
 
 	var Routes = httpRoutes.New(
