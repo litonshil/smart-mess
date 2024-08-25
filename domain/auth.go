@@ -1,11 +1,14 @@
 package domain
 
-import "smart-mess/types"
+import (
+	"context"
+	"smart-mess/types"
+)
 
-type IAuthService interface {
-	Login(req *types.LoginReq) (*types.LoginResp, error)
+type AuthUseCase interface {
+	Login(ctx context.Context, req *types.LoginReq) (*types.LoginResp, error)
 }
 
-type IAuthRepo interface {
+type AuthRepo interface {
 	Login(req *types.LoginReq) (*types.LoginResp, error)
 }

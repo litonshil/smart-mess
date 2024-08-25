@@ -67,3 +67,7 @@ func CustomSuccessMsgWithEntityID(id int, msg Data) interface{} {
 		"message": msg["message"],
 	}
 }
+
+func InvalidCredentialsMsg() Data {
+	return NewMessage().Set("message", "invalid username or password").Done()
+}
