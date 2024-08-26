@@ -8,17 +8,18 @@ import (
 type Routes struct {
 	echo           *echo.Echo
 	authController *c.AuthController
+	userController *c.UserController
 }
 
 func New(
 	e *echo.Echo,
 	authController *c.AuthController,
-
+	userController *c.UserController,
 ) *Routes {
-
 	return &Routes{
 		echo:           e,
 		authController: authController,
+		userController: userController,
 	}
 }
 
@@ -29,7 +30,7 @@ func (r *Routes) Init() {
 	//e.GET("/metrics", echo.WrapHandler(promhttp.Handler()))
 
 	g := e.Group("/v1")
-	//g.POST("/user/signup", uc.Create, m.ACL(consts.PermissionUserCreate))
+	g.POST("/user", r.userController.CreateUser)
 	g.POST("/login", r.authController.Login)
 	//g.POST("/v1/login", ac.Login)
 	//g.POST("/v1/logout", ac.Logout)

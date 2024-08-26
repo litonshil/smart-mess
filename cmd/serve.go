@@ -13,6 +13,7 @@ import (
 
 	authservice "smart-mess/services/auth"
 	txservice "smart-mess/services/transaction"
+	userservice "smart-mess/services/user"
 )
 
 var serveCmd = &cobra.Command{
@@ -33,6 +34,7 @@ func serve(cmd *cobra.Command, args []string) {
 
 	txsvc := txservice.NewDBTransaction(lc, dbRepo)
 	authsvc := authservice.NewAuthService(dbRepo)
+	usersvc := userservice.NewUserService(dbRepo)
 
 	_ = txsvc
 
@@ -44,9 +46,15 @@ func serve(cmd *cobra.Command, args []string) {
 		authsvc,
 	)
 
+	userController := httpControllers.NewUserController(
+		baseContext,
+		usersvc,
+	)
+
 	var Routes = httpRoutes.New(
 		HttpServer.Echo,
 		authController,
+		userController,
 	)
 
 	// Spooling

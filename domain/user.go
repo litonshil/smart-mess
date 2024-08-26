@@ -1,5 +1,10 @@
 package domain
 
+import (
+	"context"
+	"smart-mess/types"
+)
+
 type User struct {
 	ID       int  `json:"id"`
 	Metadata Meta `json:"meta"`
@@ -19,4 +24,12 @@ type Meta struct {
 	AppKey      *string `json:"app-key,omitempty"`
 	Profile
 	Payload interface{} `json:"payload"`
+}
+
+type UserUseCase interface {
+	CreateUser(ctx context.Context, req types.UserReq) (*types.UserResp, error)
+}
+
+type UserRepo interface {
+	CreateUser(req User) (*types.UserResp, error)
 }
