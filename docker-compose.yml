@@ -1,0 +1,97 @@
+version: '3.7'
+
+services:
+  consul:
+    image: consul:latest
+    container_name: consul_dev
+    restart: always
+    ports:
+      - "8500:8500"
+    networks:
+      - smart_mess_networks
+
+  db:
+    container_name: smart_mess_mysql
+    image: mysql:8.0.31
+#    build:
+#      context: .
+#      dockerfile: Dockerfile.db
+    ports:
+      - "3309:3306"
+    volumes:
+      - smart_mess_db:/var/lib/mysql:rw
+    environment:
+      - MYSQL_USER=smart_mess_user
+      - MYSQL_PASSWORD=12345678
+      - MYSQL_DATABASE=smart_mess_db
+      - MYSQL_ROOT_PASSWORD=12345678
+    tty: true
+    networks:
+      - smart_mess_networks
+
+  redis:
+    image: 'bitnami/redis:6.0.9'
+    container_name: redis_dev
+    restart: always
+    ports:
+      - "6390:6379"
+    environment:
+      - DISABLE_COMMANDS=FLUSHDB,FLUSHALL,CONFIG
+      - REDIS_PASSWORD=password123
+    volumes:
+      - smart_mess_cache:/bitnami/redis/data:rw
+    networks:
+      - smart_mess_networks
+
+  smart_mess:
+    container_name: smart_mess
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    command: serve  # make `serve` into `seed` or `seed --truncate=true` if anyone want to run the seeder
+    volumes:
+      - ./:/project
+    environment:
+      - CONSUL_URL=consul_dev:8500
+      - CONSUL_PATH=smart_mess
+    tty: true
+    depends_on:
+      - consul
+      - db
+      - redis
+    networks:
+      - smart_mess_networks
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+#  prometheus:
+#    image: prom/prometheus:latest
+#    container_name: smart_mess_prom
+#    ports:
+#      - "9090:9090"
+#    volumes:
+#      - ./prometheus.yaml:/etc/prometheus/prometheus.yml
+#      - prometheus-data:/prometheus
+#    restart: unless-stopped
+#    command:
+#      - "--config.file=/etc/prometheus/prometheus.yml"
+#    depends_on:
+#      - smart_mess
+#    networks:
+#      - smart_mess_networks
+
+networks:
+  smart_mess_networks:
+    name: smart_mess_networks
+    driver: bridge
+
+volumes:
+  smart_mess_db:
+    name: smart-mess-db-data
+  smart_mess_cache:
+    name: smart-mess-cache-data
