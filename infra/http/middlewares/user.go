@@ -30,7 +30,7 @@ func GenerateMetadata(c echo.Context, user *domain.User) *domain.User {
 			Email:     user.Email,
 		},
 		//Payload: body,
-		//
+
 		//Profile: domain.Profile{
 		//	FirstName: user.FirstName,
 		//	LastName:  user.LastName,
