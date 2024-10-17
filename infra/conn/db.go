@@ -31,6 +31,7 @@ func ConnectDB() {
 	replicaDSN := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=true", replicaConf.Username,
 		replicaConf.Password, replicaConf.Host, replicaConf.Port, replicaConf.Name)
 
+	fmt.Printf(masterDSN)
 	dB, err := gorm.Open(mysql.Open(masterDSN), &gorm.Config{
 		PrepareStmt: masterConf.PrepareStmt,
 		Logger:      logger.Default.LogMode(logMode),

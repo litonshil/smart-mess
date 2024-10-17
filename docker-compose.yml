@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   consul:
-    image: consul:latest
+    image: consul:1.14.5
     container_name: consul_dev
     restart: always
     ports:
@@ -17,14 +17,16 @@ services:
 #      context: .
 #      dockerfile: Dockerfile.db
     ports:
-      - "3309:3306"
+      - "3306:3306"
     volumes:
       - smart_mess_db:/var/lib/mysql:rw
+#      - ./scripts/initdb.sql:/docker-entrypoint-initdb.d/initdb.sql
+
     environment:
+      - MYSQL_ROOT_PASSWORD=12345678
+      - MYSQL_DATABASE=smart_mess_db
       - MYSQL_USER=smart_mess_user
       - MYSQL_PASSWORD=12345678
-      - MYSQL_DATABASE=smart_mess_db
-      - MYSQL_ROOT_PASSWORD=12345678
     tty: true
     networks:
       - smart_mess_networks
@@ -53,7 +55,7 @@ services:
     volumes:
       - ./:/project
     environment:
-      - CONSUL_URL=consul_dev:8500
+      - CONSUL_URL=http://consul_dev:8500
       - CONSUL_PATH=smart_mess
     tty: true
     depends_on:
@@ -68,22 +70,6 @@ services:
         delay: 5s
         max_attempts: 3
         window: 120s
-
-#  prometheus:
-#    image: prom/prometheus:latest
-#    container_name: smart_mess_prom
-#    ports:
-#      - "9090:9090"
-#    volumes:
-#      - ./prometheus.yaml:/etc/prometheus/prometheus.yml
-#      - prometheus-data:/prometheus
-#    restart: unless-stopped
-#    command:
-#      - "--config.file=/etc/prometheus/prometheus.yml"
-#    depends_on:
-#      - smart_mess
-#    networks:
-#      - smart_mess_networks
 
 networks:
   smart_mess_networks:

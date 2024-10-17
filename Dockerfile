@@ -1,4 +1,4 @@
-ARG GO_VERSION=1.20
+ARG GO_VERSION=1.21
 
 # Start from base golang image
 FROM golang:${GO_VERSION}-alpine AS builder
@@ -41,7 +41,7 @@ COPY --from=builder /app /app
 
 # As we're going to run the executable as an unprivileged user, we can't bind
 # to ports below 1024.
-EXPOSE 8000
+EXPOSE 8080
 
 # Perform any further action as an unprivileged user.
 USER nobody:nobody

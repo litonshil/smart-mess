@@ -123,20 +123,28 @@ func Queue() *QueueClient {
 func Load() error {
 	setDefaultConfig()
 
+	_ = viper.BindEnv("env")
 	_ = viper.BindEnv("CONSUL_URL")
 	_ = viper.BindEnv("CONSUL_PATH")
 
 	consulURL := viper.GetString("CONSUL_URL")
 	consulPath := viper.GetString("CONSUL_PATH")
 
-	if consulURL != "" || consulPath != "" {
-		_ = viper.AddRemoteProvider("consul", consulURL, consulPath)
-
+	if consulURL != "" && consulPath != "" {
 		viper.SetConfigType("json")
-		err := viper.ReadRemoteConfig()
+		// Use the correct provider and path
+		err := viper.AddRemoteProvider("consul", consulURL, consulPath)
+		if err != nil {
+			log.Fatalf("Failed to add remote provider: %v", err)
+		}
+
+		err = viper.ReadRemoteConfig()
+
+		log.Printf("consul_url = %v \nconsul_path = %v", consulURL, consulPath)
 
 		if err != nil {
-			log.Printf("%s named \"%s\"", err.Error(), consulPath)
+			log.Printf("Failed to read remote config: %v", err)
+			//log.Printf("%s named \"%s\"", err.Error(), consulPath)
 		}
 
 		c = Config{}
@@ -184,7 +192,7 @@ func setDefaultConfig() {
 		Master: &DBConfig{
 			Host:        "localhost",
 			Name:        "smart-mess",
-			Port:        3306,
+			Port:        3309,
 			Username:    "root",
 			Password:    "",
 			MaxLifeTime: 30,
