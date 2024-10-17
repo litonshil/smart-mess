@@ -61,6 +61,9 @@ func GenerateMetadata(c echo.Context, user *domain.User) *domain.User {
 		//test
 		//test
 		//test
+		//AppKey: &appkey,
+		//AppKey: &appkey,
+		//AppKey: &appkey,
 	}
 	user.Metadata = metadata
 	return user
