@@ -56,6 +56,8 @@ func GenerateMetadata(c echo.Context, user *domain.User) *domain.User {
 		//test
 		//test
 		//test
+
+		//test
 	}
 	user.Metadata = metadata
 	return user
